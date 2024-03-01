@@ -23,6 +23,9 @@ jobs:
 
     - name: Build APK
       run: flutter build apk
+
+    - name: Build iOS
+      run: flutter build ios --release --no-codesign
       
     - name: Create Release
       id: create_release
@@ -36,7 +39,7 @@ jobs:
         prerelease: false
 
     - name: Upload APK
-      id: upload-release-asset 
+      id: upload_apk_release_asset 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
@@ -45,3 +48,15 @@ jobs:
         asset_path: ./build/app/outputs/flutter-apk/app-release.apk
         asset_name: app-release.apk
         asset_content_type: application/vnd.android.package-archive
+
+        
+    - name: Upload iOS Build
+      id: upload_ios_release_asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/ios/archive/Runner.ipa
+        asset_name: app-release.ipa
+        asset_content_type: application/octet-stream
