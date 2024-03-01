@@ -91,3 +91,82 @@ jobs:
         asset_name: app-release-ios.zip
         asset_content_type: application/zip
    
+  build_and_release_windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.2'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Build Windows
+      run: flutter build windows
+      
+    - name: Create Release
+      id: create_release_windows
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}_windows
+        release_name: Release ${{ github.run_number }} - Windows
+        draft: false
+        prerelease: false
+        
+    - name: Upload Windows EXE
+      id: upload_windows_release_asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release_windows.outputs.upload_url }}
+        asset_path: ./build/windows/runner/Release/runner.exe
+        asset_name: app-release-windows.exe
+        asset_content_type: application/octet-stream
+
+  build_and_release_linux:
+     runs-on: ubuntu-latest
+
+     steps:
+     - name: Checkout code
+       uses: actions/checkout@v2
+
+     - name: Setup Flutter
+       uses: subosito/flutter-action@v2
+       with:
+        flutter-version: '3.19.2'
+
+     - name: Get dependencies
+       run: flutter pub get
+
+     - name: Build Linux
+       run: flutter build linux
+      
+     - name: Create Release
+       id: create_release_linux
+       uses: actions/create-release@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+       with:
+         tag_name: v${{ github.run_number }}_linux
+         release_name: Release ${{ github.run_number }} - Linux
+         draft: false
+         prerelease: false
+        
+     - name: Upload Linux App
+       id: upload_linux_release_asset 
+       uses: actions/upload-release-asset@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+       with:
+         upload_url: ${{ steps.create_release_linux.outputs.upload_url }}
+         asset_path: ./build/linux/x64/release/
+         asset_name: app-release-linux.tar.gz
+         asset_content_type: application/gzip
