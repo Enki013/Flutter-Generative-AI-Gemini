@@ -74,7 +74,12 @@ jobs:
         release_name: Release ${{ github.run_number }}
         draft: false
         prerelease: false
-
+        
+    - name: Zip iOS IPA
+      run: |
+       cd ./build/ios/iphoneos
+       zip -r Runner.zip Runner.app
+    
     - name: Upload iOS IPA
       id: upload_ios_release_asset 
       uses: actions/upload-release-asset@v1
