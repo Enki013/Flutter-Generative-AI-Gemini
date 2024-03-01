@@ -82,7 +82,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release_ios.outputs.upload_url }}
-        asset_path: ./build/ios/iphoneos/Runner.app
+        asset_path: ./build/ios/iphoneos/Runner.app.zip
         asset_name: app-release-ios.zip
         asset_content_type: application/zip
    
