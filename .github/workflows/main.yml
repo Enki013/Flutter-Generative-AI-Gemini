@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_release:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
@@ -23,11 +23,6 @@ jobs:
 
     - name: Build APK
       run: flutter build apk
-
-    - name: Build iOS
-      run: |
-        brew install cocoapods
-        flutter build ios --no-codesign
       
     - name: Create Release
       id: create_release
@@ -51,14 +46,53 @@ jobs:
         asset_name: app-release.apk
         asset_content_type: application/vnd.android.package-archive
 
-        
-    - name: Upload iOS Build
+  build_and_release_ios:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.2'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Build iOS
+      run: |
+        brew install cocoapods
+        flutter build ios --no-codesign
+
+    - name: Create IPA
+      run: |
+        cd ios
+        pod install
+        xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath build/Runner.xcarchive archive
+        xcodebuild -exportArchive -archivePath build/Runner.xcarchive -exportOptionsPlist exportOptions.plist -exportPath build
+        cd ..
+
+    - name: Create Release
+      id: create_release_ios
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release ${{ github.run_number }}
+        draft: false
+        prerelease: false
+
+    - name: Upload iOS IPA
       id: upload_ios_release_asset 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/ios/iphonesimulator/Runner.app
-        asset_name: Runner-iOS.zip
-        asset_content_type: application/zip
+        upload_url: ${{ steps.create_release_ios.outputs.upload_url }}
+        asset_path: ./ios/build/Runner.ipa
+        asset_name: app-release-ios.ipa
+        asset_content_type: application/octet-stream     
+   
