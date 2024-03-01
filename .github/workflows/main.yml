@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_and_release:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - name: Checkout code
@@ -25,7 +25,9 @@ jobs:
       run: flutter build apk
 
     - name: Build iOS
-      run: flutter build ios --release --no-codesign
+      run: |
+        brew install cocoapods
+        flutter build ios --no-codesign
       
     - name: Create Release
       id: create_release
