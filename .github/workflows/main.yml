@@ -61,17 +61,8 @@ jobs:
     - name: Get dependencies
       run: flutter pub get
 
-    - name: Install Cocoapods
-      run: |
-        sudo gem install cocoapods
-        
     - name: Build iOS
-      run: |
-        cd ios
-        pod install
-        xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath build/Runner.xcarchive archive
-        xcodebuild -exportArchive -archivePath build/Runner.xcarchive -exportOptionsPlist exportOptions.plist -exportPath build
-        cd ..
+      run: flutter build ios --no-codesign
 
     - name: Create Release
       id: create_release_ios
@@ -91,7 +82,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release_ios.outputs.upload_url }}
-        asset_path: ./ios/build/Runner.ipa
-        asset_name: app-release-ios.ipa
-        asset_content_type: application/octet-stream     
+        asset_path: ./build/ios/iphonesimulator/Runner.app
+        asset_name: app-release-ios.zip
+        asset_content_type: application/zip
    
