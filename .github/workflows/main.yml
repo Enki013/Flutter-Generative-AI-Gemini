@@ -20,7 +20,7 @@ jobs:
 
     - name: Get dependencies
       run: flutter pub get
-
+      
     - name: Build APK
       run: flutter build apk
       
@@ -61,12 +61,11 @@ jobs:
     - name: Get dependencies
       run: flutter pub get
 
-    - name: Build iOS
+    - name: Install Cocoapods
       run: |
-        brew install cocoapods
-        flutter build ios --no-codesign
-
-    - name: Create IPA
+        sudo gem install cocoapods
+        
+    - name: Build iOS
       run: |
         cd ios
         pod install
