@@ -30,8 +30,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       with:
-        tag_name: v${{ github.run_number }}
-        release_name: Release ${{ github.run_number }}
+        tag_name: v${{ github.run_number }}_android
+        release_name: Release ${{ github.run_number }} - Android
         draft: false
         prerelease: false
 
@@ -70,8 +70,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       with:
-        tag_name: v${{ github.run_number }}
-        release_name: Release ${{ github.run_number }}
+        tag_name: v${{ github.run_number }}_ios
+        release_name: Release ${{ github.run_number }} - iOS
         draft: false
         prerelease: false
         
