@@ -120,16 +120,23 @@ jobs:
         draft: false
         prerelease: false
         
-    - name: Upload Windows EXE
+    - name: Zip and Upload Windows Build
+      uses: montudor/action-zip@v2
+      with:
+        files: |
+          ./build/windows/x64/runner/Release/*
+        dest: 'app-release-windows.zip'   
+        
+    - name: Upload Windows Build
       id: upload_windows_release_asset 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release_windows.outputs.upload_url }}
-        asset_path: ./build/windows/runner/Release/runner.exe
-        asset_name: app-release-windows.exe
-        asset_content_type: application/octet-stream
+        asset_path: ./app-release-windows.zip
+        asset_name: app-release-windows.zip
+        asset_content_type: application/zip
 
   build_and_release_linux:
      runs-on: ubuntu-latest
@@ -137,7 +144,14 @@ jobs:
      steps:
      - name: Checkout code
        uses: actions/checkout@v2
-
+       
+     - name: Setup Ninja, CMake, and g++
+       run: |
+        sudo apt update
+        sudo apt install ninja-build
+        sudo apt install cmake
+        sudo apt install g++
+        
      - name: Setup Flutter
        uses: subosito/flutter-action@v2
        with:
