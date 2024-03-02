@@ -162,7 +162,7 @@ jobs:
        run: flutter build linux
        
      - name: Archive Linux Build
-       run: tar -zcvf app-release-linux.tar.gz -C ./build/linux/x64/release/ .
+       run: tar -zcvf app-release-linux.tar.gz -C ./build/linux/x64/release/bundle .
        
      - name: Create Release
        id: create_release_linux
