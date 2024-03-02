@@ -160,7 +160,10 @@ jobs:
 
      - name: Build Linux
        run: flutter build linux
-      
+       
+     - name: Archive Linux Build
+       run: tar -zcvf app-release-linux.tar.gz -C ./build/linux/x64/release/ .
+       
      - name: Create Release
        id: create_release_linux
        uses: actions/create-release@v1
