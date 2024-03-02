@@ -6,7 +6,7 @@ on:
       - main 
 
 jobs:
-  build_and_release:
+  build_and_release_android:
     runs-on: ubuntu-latest
 
     steps:
