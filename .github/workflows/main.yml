@@ -182,6 +182,6 @@ jobs:
          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
        with:
          upload_url: ${{ steps.create_release_linux.outputs.upload_url }}
-         asset_path: ./build/linux/x64/release/
+         asset_path: ./app-release-linux.tar.gz
          asset_name: app-release-linux.tar.gz
          asset_content_type: application/gzip
